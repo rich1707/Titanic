@@ -160,7 +160,7 @@ titanic %>%
    geom_col(position = "dodge", alpha = 0.5, colour = "black") + 
    labs(x = NULL, y = NULL, title = "Survivors shown by class and by sex") + 
    scale_y_continuous(labels = label_percent(scale = 1)) + 
-   scale_fill_manual(values = wes_palette(name = "Cavalcanti1", n = 2, type = "discrete"),
+   scale_fill_manual(values = c("#b49e77", "#221805"), 
                      labels = c("Female", "Male")) +
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
@@ -209,7 +209,7 @@ titanic %>%
    labs(x = NULL, y = NULL, 
         title = "Child vs adult survivors across all passenger classes") + 
    scale_y_continuous(labels = label_percent(scale = 1)) + 
-   scale_fill_manual(values = wes_palette(name = "Cavalcanti1", n = 2, type = "discrete"),
+   scale_fill_manual(values = c("#b49e77", "#221805"),
                      labels = c("Child", "Adult")) + 
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
@@ -252,7 +252,7 @@ titanic %>%
    mutate(title = if_else(title == "Mr" & age < 18, "Mr_Child", title)) %>% 
    mutate(title = as.factor(title)) %>% 
    mutate(title = fct_lump_min(title, min = 10)) %>% 
-   mutate(title = fct_relevel(title, levels = c("Master", "Other", "Mr", "Mr_Child"))) %>% 
+   mutate(title = fct_relevel(title, levels = c("Mr_Child", "Mr", "Other", "Master"))) %>% 
    group_by(title) %>% 
    summarise(
       passengers = n(),
@@ -260,12 +260,17 @@ titanic %>%
       percent_survived = (survivors / passengers) * 100,
       .groups = "drop"
    ) %>%
-   ggplot(aes(x = title, y = percent_survived, fill = title)) + 
-   geom_col(alpha = 0.5, show.legend = FALSE, colour = "black", width = 0.75) + 
+   ggplot(aes(x = title, y = percent_survived)) + 
+   geom_point(size = 5, colour = "#463922") +
+   geom_segment(
+      aes(x = title, xend = title, y = 0, yend = percent_survived), 
+      colour = "#463922",
+      size = 2
+   ) + 
    labs(x = NULL, y = NULL, 
         title = "Showing the survival rates across the categories of male passengers") + 
    scale_y_continuous(labels = label_percent(scale = 1)) + 
-   scale_fill_manual(values = wes_palette(name = "Cavalcanti1", n = 4, type = "discrete")) + 
+   coord_flip() + 
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
          plot.title = element_text(face = "bold"))
@@ -307,7 +312,7 @@ titanic %>%
 
 Once again, we shall lump the less common factors together as `Other`. Here it is not easy to identify children, as `Miss` is used for any unmarried female, child or not. We must also recognise that some people under the age of 18 will be married. Nevertheless, our data does not have to be perfect to guide our analysis in the right direction.
 
-```{r, warning=FALSE}
+```{r}
 
 titanic %>% 
    mutate(title = str_extract(name, pattern = "[a-zA-Z]+(?=\\.)")) %>% 
@@ -316,24 +321,30 @@ titanic %>%
    mutate(title = if_else(title == "Miss" & age < 18, "Miss_Child", title)) %>% 
    mutate(title = as.factor(title)) %>% 
    mutate(title = fct_lump_min(title, min = 10)) %>% 
-   mutate(title = fct_relevel(title, levels = c("Other", "Mrs", "Miss", "Miss_Child"))) %>% 
+   mutate(title = fct_relevel(title, levels = c("Miss_Child", "Miss", "Mrs", "Other"))) %>% 
    group_by(title) %>% 
    summarise(
       passengers = n(),
       survivors = sum(survived),
       percent_survived = (survivors / passengers) * 100
    ) %>% 
-   ggplot(aes(x = title, y = percent_survived, fill = title)) + 
-   geom_col(alpha = 0.5, show.legend = FALSE, colour = "black", width = 0.8) + 
+   ggplot(aes(x = title, y = percent_survived)) + 
+   geom_point(size = 5, colour = "#463922") + 
+   geom_segment(
+      aes(x = title, xend = title, y = 0, yend = percent_survived),  
+      colour = "#463922",
+      size = 2
+   ) +
    labs(x = NULL, y = NULL, 
-        title = "Showing the survival rates across the categories of female passengers") + 
+        title = "Showing the survival rate of female passengers (by class)") + 
    scale_y_continuous(labels = label_percent(scale = 1)) + 
-   scale_fill_manual(values = wes_palette(name = "Cavalcanti1", n = 4, type = "discrete")) + 
+   coord_flip() + 
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
          plot.title = element_text(face = "bold"))
-
+   
 ```
+
 
 It is interesting that the female children we have identified have the lowest survival rate. This seems to contradict our earlier finding that children stood a better chance of survival than their adult counterparts. However, this is easily explained. Consider the following plot:
 
@@ -351,11 +362,16 @@ titanic %>%
       sex == "female" & age > 18 ~ "Woman",
    )) %>% 
    count(pclass, name = "passengers") %>% 
-   ggplot(aes(x = pclass, y = passengers, fill = pclass)) + 
-   geom_col(alpha = 0.5, show.legend = FALSE, colour = "black", width = 0.7) + 
+   ggplot(aes(x = pclass, y = passengers)) + 
+   geom_point(size = 5, colour = "#463922") +
+   geom_segment(
+      aes(x = pclass, xend = pclass, y = 0, yend = passengers), 
+      colour = "#463922",
+      size = 2
+   ) + 
    labs(x = NULL, y = NULL, 
         title = "Showing the total number of children travelling in each class") + 
-   scale_fill_manual(values = wes_palette(name = "Cavalcanti1", n = 3, type = "discrete")) +
+   coord_flip() +    
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
          plot.title = element_text(face = "bold"))
@@ -391,7 +407,7 @@ titanic %>%
    labs(x = NULL, y = NULL, 
         title = "Showing the survival rate of single travellers vs families") +
    scale_y_continuous(labels = scales::percent_format(scale = 1)) + 
-   scale_fill_manual(values = wes_palette(name = "Cavalcanti1", n = 2, type = "discrete")) + 
+   scale_fill_manual(values = c("#b49e77", "#221805")) + 
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
          plot.title = element_text(face = "bold"),
@@ -712,9 +728,13 @@ titanic_model %>%
       Variable, 
       levels = c("title", "family_survived", "real_fare", "cabin_recorded", "embarked"))) %>% 
    ggplot(aes(x = fct_rev(Variable), y = Importance, fill = Variable)) + 
-   geom_col(alpha = 0.5, show.legend = FALSE, colour = "black") + 
-   labs(y = NULL, x = NULL, title = "Showing the importance of each variable to our model") + 
-   scale_fill_manual(values = wes_palette(name = "Cavalcanti1", n = 5, type = "discrete")) +
+   geom_point(size = 5, show.legend = FALSE, colour = "#463922") + 
+   geom_segment(
+      aes(x = Variable, xend = Variable, y = 0, yend = Importance), 
+      colour = "#463922",
+      size = 2 
+   ) + 
+   labs(y = NULL, x = NULL, title = "Showing variable importance in our model") + 
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
          plot.title = element_text(face = "bold")) + 
