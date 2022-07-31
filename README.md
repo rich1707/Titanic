@@ -1,2 +1,2 @@
 # Titanic
-The Kaggle Titanic dataset
+The Titanic dataset from Kaggle
