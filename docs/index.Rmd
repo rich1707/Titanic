@@ -11,6 +11,7 @@ output:
       toc_depth: 3
       toc_float: true
       number_sections: true
+      
 --- 
 
 ```{r setup, include=FALSE}
@@ -27,7 +28,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-One of the most interesting features of the Titanic dataset is that it is very easy to make fairly accurate predictions of who survives. For example, if we predict that all males perish and all females survive, we will achieve an accuracy of about 76%. 
+One of the most interesting features of the Titanic dataset is that it is very easy to make fairly accurate predictions of who survives. For example, if we predict that all males perish and all females survive, we shall achieve an accuracy of about 76%. 
 
 As we shall see, improving on that score is not as easy as might first be imagined. In order to improve on the above prediction, we shall have to build a model that predicts females who perish or males who survive. This sounds rather a morbid task but the insights it will provide into human nature are valuable and sometimes even uplifting. 
 
@@ -160,7 +161,7 @@ titanic %>%
    geom_col(position = "dodge", alpha = 0.5, colour = "black") + 
    labs(x = NULL, y = NULL, title = "Survivors shown by class and by sex") + 
    scale_y_continuous(labels = label_percent(scale = 1)) + 
-   scale_fill_manual(values = c("#b49e77", "#221805"), 
+   scale_fill_manual(values = c("#CB9E23", "#456355"), 
                      labels = c("Female", "Male")) +
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
@@ -209,7 +210,7 @@ titanic %>%
    labs(x = NULL, y = NULL, 
         title = "Child vs adult survivors across all passenger classes") + 
    scale_y_continuous(labels = label_percent(scale = 1)) + 
-   scale_fill_manual(values = c("#b49e77", "#221805"),
+   scale_fill_manual(values = c("#CB9E23", "#456355"),
                      labels = c("Child", "Adult")) + 
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
@@ -407,7 +408,7 @@ titanic %>%
    labs(x = NULL, y = NULL, 
         title = "Showing the survival rate of single travellers vs families") +
    scale_y_continuous(labels = scales::percent_format(scale = 1)) + 
-   scale_fill_manual(values = c("#b49e77", "#221805")) + 
+   scale_fill_manual(values = c("#CB9E23", "#456355")) + 
    theme(axis.text.x = element_text(face = "bold"),
          axis.text.y = element_text(face = "bold"),
          plot.title = element_text(face = "bold"),
